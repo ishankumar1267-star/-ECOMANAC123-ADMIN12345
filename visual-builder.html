@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Builder PRO | Eco Manav CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; font-family: var(--font-body); background: #f1f2f6; }
+        .builder-layout { display: flex; height: 100vh; width: 100vw; }
+        
+        /* Left Panel */
+        .builder-sidebar {
+            width: 320px; background: #fff; box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; z-index: 100;
+        }
+        .sidebar-header {
+            background: #D81B60; color: white; padding: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .panel-tabs { display: flex; border-bottom: 1px solid #eee; background: #fafafa; }
+        .panel-tab {
+            flex: 1; text-align: center; padding: 12px 0; cursor: pointer;
+            font-size: 0.85rem; font-weight: 600; color: #888; border-bottom: 2px solid transparent;
+        }
+        .panel-tab.active { color: #D81B60; border-bottom-color: #D81B60; }
+        .sidebar-body { flex: 1; overflow-y: auto; padding: 16px; }
+        
+        .widget-section-title { font-size: 0.8rem; text-transform: uppercase; color: #aaa; margin: 16px 0 8px 0; font-weight: 600; }
+        .widget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .widget-item {
+            border: 1px solid #eee; border-radius: 4px; padding: 16px 8px; text-align: center;
+            cursor: pointer; background: white; transition: all 0.2s; user-select: none;
+        }
+        .widget-item:hover { border-color: #D81B60; box-shadow: 0 4px 8px rgba(216,27,96,0.1); }
+        .widget-icon { color: #666; margin-bottom: 8px; pointer-events: none; }
+        .widget-item:hover .widget-icon { color: #D81B60; }
+        .widget-name { font-size: 0.75rem; font-weight: 600; color: #555; pointer-events: none; }
+        
+        /* Edit Properties */
+        .properties-panel { display: none; }
+        .properties-panel.active { display: block; }
+        .prop-group { margin-bottom: 20px; }
+        .prop-group label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 6px; font-weight: 500; }
+        .prop-group input[type="text"], .prop-group textarea {
+            width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem;
+        }
+        .prop-group textarea { height: 100px; resize: vertical; }
+        .sidebar-footer { padding: 16px; border-top: 1px solid #eee; background: #fafafa; display: flex; gap: 10px; }
+        .btn-update { flex: 1; background: #28a745; color: white; border: none; border-radius: 4px; padding: 10px; font-weight: 600; cursor: pointer; }
+        
+        /* Right Side Preview */
+        .preview-area { flex: 1; display: flex; flex-direction: column; background: #e0e0e0; }
+        .preview-topbar {
+            height: 50px; background: white; border-bottom: 1px solid #ddd;
+            display: flex; align-items: center; justify-content: center; gap: 16px; z-index: 10; padding: 0 20px;
+        }
+        .device-btn { background: none; border: none; color: #888; cursor: pointer; padding: 6px; border-radius: 4px; }
+        .device-btn.active { color: #D81B60; background: rgba(216,27,96,0.1); }
+        
+        .iframe-container { flex: 1; padding: 20px; display: flex; justify-content: center; overflow: hidden; }
+        #preview-iframe {
+            width: 100%; height: 100%; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: none; transition: width 0.3s;
+        }
+        #preview-iframe.tablet { width: 768px; }
+        #preview-iframe.mobile { width: 375px; }
+    </style>
+</head>
+<body>
+
+    <div class="builder-layout">
+        
+        <!-- Left Panel -->
+        <div class="builder-sidebar">
+            <div class="sidebar-header">
+                <i data-lucide="menu"></i>
+                <div style="font-weight: 600; letter-spacing: 1px;">ECO BUILDER</div>
+                <a href="index.html" style="color:white;"><i data-lucide="x"></i></a>
+            </div>
+            
+            <div class="panel-tabs">
+                <div class="panel-tab active" id="tab-elements" onclick="switchTab('elements')">ELEMENTS</div>
+                <div class="panel-tab" id="tab-global" onclick="switchTab('global')">GLOBAL</div>
+            </div>
+            
+            <div class="sidebar-body">
+                <!-- WIDGETS -->
+                <div id="panel-elements">
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 0;">Click an element in the site to edit it. Click a widget below to insert it into the site.</p>
+                    
+                    <div class="widget-section-title">Layout</div>
+                    <div class="widget-grid">
+                        <div class="widget-item" onclick="insertWidget('section')">
+                            <i data-lucide="layout-template" class="widget-icon"></i>
+                            <div class="widget-name">Section</div>
+                        </div>
+                    </div>
+                    
+                    <div class="widget-section-title">Basic Elements</div>
+                    <div class="widget-grid">
+                        <div class="widget-item" onclick="insertWidget('h2')">
+                            <i data-lucide="type" class="widget-icon"></i>
+                            <div class="widget-name">Heading</div>
+                        </div>
+                        <div class="widget-item" onclick="insertWidget('p')">
+                            <i data-lucide="align-left" class="widget-icon"></i>
+                            <div class="widget-name">Paragraph</div>
+                        </div>
+                        <div class="widget-item" onclick="insertWidget('img')">
+                            <i data-lucide="image" class="widget-icon"></i>
+                            <div class="widget-name">Image</div>
+                        </div>
+                        <div class="widget-item" onclick="insertWidget('button')">
+                            <i data-lucide="mouse-pointer-click" class="widget-icon"></i>
+                            <div class="widget-name">Button</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- EDIT PROPERTIES -->
+                <div id="panel-edit" class="properties-panel">
+                    <div style="font-weight: 600; color: #555; margin-bottom: 16px; display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="edit-3" style="width:16px;"></i> Edit Element
+                    </div>
+                    
+                    <div class="prop-group">
+                        <label>Content Text</label>
+                        <textarea id="edit-text"></textarea>
+                    </div>
+                    
+                    <div class="prop-group" id="image-url-group" style="display:none;">
+                        <label>Image URL</label>
+                        <input type="text" id="edit-img-url">
+                    </div>
+                    
+                    <div class="prop-group">
+                        <label>Text Color</label>
+                        <input type="color" id="edit-color" style="width:100%; height:40px; border:none; padding:0;">
+                    </div>
+                    
+                    <div class="prop-group">
+                        <label>Font Size</label>
+                        <input type="text" id="edit-fontsize" placeholder="e.g. 24px, 2rem">
+                    </div>
+                    
+                    <div class="prop-group">
+                        <label>Margin Bottom</label>
+                        <input type="text" id="edit-margin" placeholder="e.g. 20px">
+                    </div>
+                    
+                    <!-- NEW: BACKGROUND CONTROL SECTION -->
+                    <div style="font-weight: 600; color: #555; margin: 24px 0 16px 0; padding-top: 16px; border-top: 1px solid #eee; display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="image" style="width:16px;"></i> Background Settings
+                    </div>
+                    
+                    <div class="prop-group">
+                        <label>Background Type</label>
+                        <select id="edit-bg-type" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px; margin-bottom:8px;">
+                            <option value="none">None / Default</option>
+                            <option value="solid">Solid Color</option>
+                            <option value="gradient">Gradient</option>
+                            <option value="image">Image URL</option>
+                        </select>
+                        
+                        <div id="bg-solid-wrapper" style="display:none; margin-top:8px;">
+                            <input type="color" id="edit-bg-color" style="width:100%; height:40px; border:none; padding:0;">
+                        </div>
+                        
+                        <div id="bg-gradient-wrapper" style="display:none; margin-top:8px;">
+                            <input type="text" id="edit-bg-gradient" placeholder="e.g. linear-gradient(90deg, #ff6b35, #D81B60)" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                            <div style="font-size:0.75rem; color:#888; margin-top:4px;">Use CSS gradient syntax.</div>
+                        </div>
+                        
+                        <div id="bg-image-wrapper" style="display:none; margin-top:8px;">
+                            <input type="text" id="edit-bg-image" placeholder="https://..." style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                            <label style="margin-top:8px;">Background Size</label>
+                            <select id="edit-bg-size" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:4px;">
+                                <option value="cover">Cover (Fills Area)</option>
+                                <option value="contain">Contain (Fits inside)</option>
+                                <option value="auto">Auto (Original size)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- END BACKGROUND CONTROL -->
+                    
+                    <button class="btn btn-secondary" onclick="backToElements()" style="width:100%; margin-top:20px;">Back to Elements</button>
+                    <button class="btn" onclick="deleteSelected()" style="width:100%; margin-top:10px; background:#dc3545; color:white; border:none; padding:8px; border-radius:4px; cursor:pointer;">Delete Element</button>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="btn-update" onclick="updateSite()"><i data-lucide="save" style="width:16px; vertical-align:middle; margin-right:4px;"></i> SAVE PAGE</button>
+            </div>
+        </div>
+        
+        <!-- Right Panel Preview -->
+        <div class="preview-area">
+            <div class="preview-topbar">
+                <button class="device-btn active" onclick="setDevice('desktop', this)"><i data-lucide="monitor"></i></button>
+                <button class="device-btn" onclick="setDevice('tablet', this)"><i data-lucide="tablet"></i></button>
+                <button class="device-btn" onclick="setDevice('mobile', this)"><i data-lucide="smartphone"></i></button>
+                
+                <div style="flex: 1;"></div>
+                
+                <span style="font-size: 0.85rem; font-weight: 600; color: #888;">Editing:</span>
+                <select id="pageSelector" onchange="loadPage(this.value)" style="padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; font-weight: 500;">
+                    <option value="../index.html">Home Page</option>
+                    <option value="../about.html">About Us</option>
+                    <option value="../programs.html">Programs</option>
+                    <option value="../gallery.html">Gallery</option>
+                    <option value="../blog.html">Blog</option>
+                    <option value="../get-involved.html">Get Involved</option>
+                    <option value="../contribute.html">Contribute</option>
+                    <option value="../contact.html">Contact</option>
+                </select>
+                <button class="btn btn-ghost" onclick="window.open(document.getElementById('preview-iframe').src, '_blank')"><i data-lucide="external-link"></i></button>
+            </div>
+            
+            <div class="iframe-container">
+                <iframe id="preview-iframe" src="../index.html"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
+
+    <script>
+        lucide.createIcons();
+        
+        const iframe = document.getElementById('preview-iframe');
+
+        // Load different pages
+        function loadPage(url) {
+            iframe.src = url;
+            backToElements();
+        }
+        
+        // --- POSTMESSAGE COMMUNICATION ---
+        window.addEventListener('message', function(e) {
+            const data = e.data;
+            if (data.action === 'elementSelected') {
+                // Switch Panel
+                document.getElementById('panel-elements').style.display = 'none';
+                document.querySelector('.panel-tabs').style.display = 'none';
+                document.getElementById('panel-edit').classList.add('active');
+                
+                // Populate Data
+                const isImg = data.tagName === 'IMG';
+                
+                document.getElementById('edit-text').value = isImg ? '' : data.text;
+                document.getElementById('edit-text').parentElement.style.display = isImg ? 'none' : 'block';
+                
+                document.getElementById('edit-img-url').value = isImg ? data.src : '';
+                document.getElementById('image-url-group').style.display = isImg ? 'block' : 'none';
+                
+                // Colors come as rgb, convert to hex if possible (simplified here)
+                // document.getElementById('edit-color').value = data.color; 
+                document.getElementById('edit-fontsize').value = data.fontSize;
+                document.getElementById('edit-margin').value = data.marginBottom;
+                
+                // Background population
+                const bgTypeSelect = document.getElementById('edit-bg-type');
+                const solidWrapper = document.getElementById('bg-solid-wrapper');
+                const gradientWrapper = document.getElementById('bg-gradient-wrapper');
+                const imageWrapper = document.getElementById('bg-image-wrapper');
+                
+                solidWrapper.style.display = 'none';
+                gradientWrapper.style.display = 'none';
+                imageWrapper.style.display = 'none';
+                
+                if (data.backgroundImage && data.backgroundImage !== 'none') {
+                    if (data.backgroundImage.includes('url')) {
+                        bgTypeSelect.value = 'image';
+                        imageWrapper.style.display = 'block';
+                        // extract url
+                        let urlMatch = data.backgroundImage.match(/url\(["']?([^"']*)["']?\)/);
+                        if (urlMatch) document.getElementById('edit-bg-image').value = urlMatch[1];
+                        document.getElementById('edit-bg-size').value = data.backgroundSize || 'cover';
+                    } else if (data.backgroundImage.includes('gradient')) {
+                        bgTypeSelect.value = 'gradient';
+                        gradientWrapper.style.display = 'block';
+                        document.getElementById('edit-bg-gradient').value = data.backgroundImage;
+                    }
+                } else if (data.backgroundColor && data.backgroundColor !== 'rgba(0, 0, 0, 0)' && data.backgroundColor !== 'transparent') {
+                    bgTypeSelect.value = 'solid';
+                    solidWrapper.style.display = 'block';
+                    // Need to convert rgb to hex for color picker, simplified for now
+                    // document.getElementById('edit-bg-color').value = ...
+                } else {
+                    bgTypeSelect.value = 'none';
+                }
+            }
+        });
+        
+        // Handle Background Type Change
+        document.getElementById('edit-bg-type').addEventListener('change', function() {
+            document.getElementById('bg-solid-wrapper').style.display = this.value === 'solid' ? 'block' : 'none';
+            document.getElementById('bg-gradient-wrapper').style.display = this.value === 'gradient' ? 'block' : 'none';
+            document.getElementById('bg-image-wrapper').style.display = this.value === 'image' ? 'block' : 'none';
+            
+            if (this.value === 'none') {
+                sendToIframe('updateBackground', { type: 'none' });
+            } else if (this.value === 'solid') {
+                sendToIframe('updateBackground', { type: 'solid', value: document.getElementById('edit-bg-color').value });
+            } else if (this.value === 'gradient') {
+                sendToIframe('updateBackground', { type: 'gradient', value: document.getElementById('edit-bg-gradient').value });
+            } else if (this.value === 'image') {
+                sendToIframe('updateBackground', { type: 'image', value: document.getElementById('edit-bg-image').value, size: document.getElementById('edit-bg-size').value });
+            }
+        });
+        
+        document.getElementById('edit-bg-color').oninput = function() { if(document.getElementById('edit-bg-type').value==='solid') sendToIframe('updateBackground', { type: 'solid', value: this.value }); };
+        document.getElementById('edit-bg-gradient').oninput = function() { if(document.getElementById('edit-bg-type').value==='gradient') sendToIframe('updateBackground', { type: 'gradient', value: this.value }); };
+        document.getElementById('edit-bg-image').oninput = function() { if(document.getElementById('edit-bg-type').value==='image') sendToIframe('updateBackground', { type: 'image', value: this.value, size: document.getElementById('edit-bg-size').value }); };
+        document.getElementById('edit-bg-size').onchange = function() { if(document.getElementById('edit-bg-type').value==='image') sendToIframe('updateBackground', { type: 'image', value: document.getElementById('edit-bg-image').value, size: this.value }); };
+        
+        // Send updates to iframe
+        function sendToIframe(action, value) {
+            iframe.contentWindow.postMessage({ action: action, value: value }, '*');
+        }
+        
+        document.getElementById('edit-text').oninput = function() { sendToIframe('updateText', this.value); };
+        document.getElementById('edit-img-url').oninput = function() { sendToIframe('updateSrc', this.value); };
+        document.getElementById('edit-color').oninput = function() { sendToIframe('updateColor', this.value); };
+        document.getElementById('edit-fontsize').oninput = function() { sendToIframe('updateFontSize', this.value); };
+        document.getElementById('edit-margin').oninput = function() { sendToIframe('updateMargin', this.value); };
+        
+        function insertWidget(type) {
+            iframe.contentWindow.postMessage({ action: 'insertElement', type: type }, '*');
+        }
+        
+        function deleteSelected() {
+            sendToIframe('deleteElement', null);
+            backToElements();
+        }
+
+        // UI Functions
+        function backToElements() {
+            document.getElementById('panel-edit').classList.remove('active');
+            document.getElementById('panel-elements').style.display = 'block';
+            document.querySelector('.panel-tabs').style.display = 'flex';
+        }
+        
+        function setDevice(type, btn) {
+            document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            iframe.className = type === 'desktop' ? '' : type;
+        }
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+        
+        function updateSite() {
+            const btn = document.querySelector('.btn-update');
+            btn.innerHTML = '<i data-lucide="loader" class="spin" style="width:16px;"></i> SAVING...';
+            lucide.createIcons();
+            setTimeout(() => {
+                btn.innerHTML = '<i data-lucide="save" style="width:16px; margin-right:4px;"></i> SAVE PAGE';
+                lucide.createIcons();
+                
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.style.background = '#28a745'; toast.style.color = 'white'; toast.style.padding = '12px 24px';
+                toast.style.borderRadius = '4px'; toast.style.display = 'flex'; toast.style.alignItems = 'center'; toast.style.gap = '8px';
+                toast.innerHTML = '<i data-lucide="check-circle" style="width:18px;"></i> Page Updated Successfully';
+                container.appendChild(toast);
+                lucide.createIcons();
+                setTimeout(() => toast.remove(), 3000);
+            }, 800);
+        }
+    </script>
+</body>
+</html>

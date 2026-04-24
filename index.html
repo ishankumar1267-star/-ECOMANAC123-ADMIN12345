@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Eco Manav CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .admin-content { padding: 20px; background: #f8f9fa; }
+        
+        .card { background: #fff; border-radius: var(--radius-md); box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; padding: 20px; height: 100%; display: flex; flex-direction: column; }
+        .card-header { margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 1rem; font-weight: 600; color: #333; margin: 0; }
+        
+        /* Grid Layout */
+        .dashboard-grid { display: grid; gap: 20px; }
+        
+        /* Row 1 */
+        .row-1 { grid-template-columns: 2fr 1fr; }
+        .kpi-stack { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .kpi-mini-card { background: #fff; border: 1px solid #f0f0f0; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .kpi-info h4 { font-size: 0.8rem; color: #888; margin: 0 0 5px 0; font-weight: 500; }
+        .kpi-info h2 { font-size: 1.5rem; margin: 0; color: #333; }
+        .kpi-chart { width: 60px; height: 40px; }
+        
+        .kpi-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .kpi-badge { background: #fff; border: 1px solid #f0f0f0; padding: 12px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 600; }
+        .icon-box { width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; }
+        
+        /* Row 2 */
+        .row-2 { grid-template-columns: 1fr 1fr 1fr; }
+        
+        /* Row 3 */
+        .row-3 { grid-template-columns: 1fr; }
+        
+        @media (max-width: 1200px) {
+            .row-1 { grid-template-columns: 1fr; }
+            .row-2 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .row-2 { grid-template-columns: 1fr; }
+            .kpi-stack, .kpi-badges { grid-template-columns: 1fr; }
+        }
+
+        .chart-container { position: relative; flex-grow: 1; min-height: 250px; width: 100%; }
+        
+        /* List Items */
+        .report-list { list-style: none; padding: 0; margin: 15px 0 0 0; }
+        .report-list li { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; }
+        .report-list li:last-child { border-bottom: none; }
+        .report-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+        
+        /* Map Table */
+        .map-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .map-table th { text-align: left; padding: 12px 0; border-bottom: 1px solid #eee; color: #888; font-size: 0.8rem; text-transform: uppercase; }
+        .map-table td { padding: 12px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; font-weight: 500; }
+        .map-table tr:last-child td { border-bottom: none; }
+        
+        /* Mobile Toggle */
+        .mobile-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--admin-text); }
+        @media (max-width: 768px) {
+            .admin-sidebar { position: fixed; left: -240px; z-index: 1000; }
+            .admin-sidebar.open { left: 0; }
+            .mobile-toggle { display: block; }
+        }
+        .overlay { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.5); z-index: 900; }
+        .overlay.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-layout">
+        <div class="overlay" id="sidebarOverlay"></div>
+
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-logo"><i data-lucide="leaf"></i> ECO MANAV</div>
+            
+            <div class="sidebar-user">
+                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100" alt="Admin">
+                <div>
+                    <div class="name">Rajesh Kumar</div>
+                    <div class="role">Super Admin</div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="blog-manager.html" class="nav-item"><i data-lucide="file-text"></i> Blog Posts</a>
+                <a href="programs-manager.html" class="nav-item"><i data-lucide="graduation-cap"></i> Programs</a>
+                <a href="gallery-manager.html" class="nav-item"><i data-lucide="image"></i> Gallery</a>
+                <a href="donations-manager.html" class="nav-item"><i data-lucide="indian-rupee"></i> Donations</a>
+                <a href="users-manager.html" class="nav-item"><i data-lucide="users"></i> Users & Vol.</a>
+                <a href="messages.html" class="nav-item"><i data-lucide="mail"></i> Messages</a>
+                <a href="pages-manager.html" class="nav-item"><i data-lucide="file"></i> Pages</a>
+                <a href="visual-builder.html" class="nav-item" style="color:var(--admin-warning); font-weight:600;"><i data-lucide="layout-template"></i> Visual Builder <span style="font-size:0.6rem;background:var(--admin-warning);color:white;padding:2px 4px;border-radius:4px;margin-left:4px;vertical-align:top;">PRO</span></a>
+                <a href="appearance.html" class="nav-item"><i data-lucide="palette"></i> Appearance</a>
+                <a href="settings.html" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+                <a href="seo-manager.html" class="nav-item"><i data-lucide="search"></i> SEO Manager</a>
+                <a href="notifications.html" class="nav-item"><i data-lucide="bell"></i> Notifications</a>
+                <div style="margin-top: 40px;"></div>
+                <a href="login.html" class="nav-item"><i data-lucide="log-out"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="d-flex align-center gap-3">
+                    <button class="mobile-toggle" id="mobileToggle"><i data-lucide="menu"></i></button>
+                    <h2 style="font-size: 1.25rem; margin: 0;">DashBoard</h2>
+                </div>
+                
+                <div class="d-flex align-center gap-4">
+                    <div class="header-search d-none d-md-block">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Search for results...">
+                    </div>
+                    <div class="header-actions">
+                        <div class="header-icon"><i data-lucide="scan-line"></i></div>
+                        <div class="header-icon"><i data-lucide="message-square"></i></div>
+                        <div class="header-icon"><i data-lucide="bell"></i><span class="badge">3</span></div>
+                        <div class="header-icon"><i data-lucide="layout-grid"></i></div>
+                        <div class="header-icon"><i data-lucide="settings"></i></div>
+                        <div class="header-icon"><i data-lucide="maximize"></i></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                
+                <!-- ROW 1 -->
+                <div class="dashboard-grid row-1 mb-4">
+                    <!-- Website Performance (Stepped Chart) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Website Performance</h3>
+                        </div>
+                        <div class="chart-container" style="min-height: 300px;">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- KPI Cards Stack -->
+                    <div>
+                        <div class="kpi-stack">
+                            <div class="kpi-mini-card">
+                                <div class="kpi-info">
+                                    <h4>Total Users</h4>
+                                    <h2>343</h2>
+                                </div>
+                                <div class="kpi-chart"><canvas id="miniChart1"></canvas></div>
+                            </div>
+                            <div class="kpi-mini-card">
+                                <div class="kpi-info">
+                                    <h4>Survivor Users</h4>
+                                    <h2>2</h2>
+                                </div>
+                                <div class="kpi-chart"><canvas id="miniChart2"></canvas></div>
+                            </div>
+                            <div class="kpi-mini-card">
+                                <div class="kpi-info">
+                                    <h4>Total Visitors</h4>
+                                    <h2>738264</h2>
+                                </div>
+                                <div class="kpi-chart"><canvas id="miniChart3"></canvas></div>
+                            </div>
+                            <div class="kpi-mini-card">
+                                <div class="kpi-info">
+                                    <h4>Course</h4>
+                                    <h2>76</h2>
+                                </div>
+                                <div class="kpi-chart"><canvas id="miniChart4"></canvas></div>
+                            </div>
+                        </div>
+                        
+                        <div class="kpi-badges">
+                            <div class="kpi-badge">
+                                <span>Delivery</span>
+                                <div class="icon-box" style="background:#28a745;"><i data-lucide="box" style="width:16px;"></i></div>
+                            </div>
+                            <div class="kpi-badge">
+                                <span>SMS Sent</span>
+                                <div class="icon-box" style="background:#dc3545;"><i data-lucide="send" style="width:16px;"></i></div>
+                            </div>
+                            <div class="kpi-badge">
+                                <span>Promotional</span>
+                                <div class="icon-box" style="background:#007bff;"><i data-lucide="megaphone" style="width:16px;"></i></div>
+                            </div>
+                            <div class="kpi-badge">
+                                <span>Transactional</span>
+                                <div class="icon-box" style="background:#dc3545;"><i data-lucide="credit-card" style="width:16px;"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 2 -->
+                <div class="dashboard-grid row-2 mb-4">
+                    <!-- Website Visitors (Horizontal Bar) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Website Visitor's</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="visitorsHBar"></canvas>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <div style="font-size:0.8rem; color:#888;">Most Visited</div>
+                            <div style="font-size:0.9rem; font-weight:600; color:var(--admin-green);">Total Visitors : 738264</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Web Analytics (Vertical Bar) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Web Analytics</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="analyticsBar"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Report Monthly Avg (Area + List) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Report Monthly Avg.</h3>
+                        </div>
+                        <div class="chart-container" style="min-height: 120px;">
+                            <canvas id="reportArea"></canvas>
+                        </div>
+                        <ul class="report-list">
+                            <li>
+                                <div class="d-flex align-center">
+                                    <div class="report-icon" style="background:#e3f2fd; color:#007bff;"><i data-lucide="dollar-sign" style="width:18px;"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">Income</div>
+                                        <div style="font-weight:700;">₹ 1K</div>
+                                    </div>
+                                </div>
+                                <span style="color:#28a745; font-size:0.8rem; font-weight:600;">+5%</span>
+                            </li>
+                            <li>
+                                <div class="d-flex align-center">
+                                    <div class="report-icon" style="background:#fff3cd; color:#ffc107;"><i data-lucide="shopping-bag" style="width:18px;"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">Expense</div>
+                                        <div style="font-weight:700;">₹ 2K</div>
+                                    </div>
+                                </div>
+                                <span style="color:#dc3545; font-size:0.8rem; font-weight:600;">+2%</span>
+                            </li>
+                            <li>
+                                <div class="d-flex align-center">
+                                    <div class="report-icon" style="background:#e0f2f1; color:#20c997;"><i data-lucide="trending-up" style="width:18px;"></i></div>
+                                    <div>
+                                        <div style="font-weight:600; font-size:0.9rem;">Profit</div>
+                                        <div style="font-weight:700;">₹ 5K</div>
+                                    </div>
+                                </div>
+                                <span style="color:#28a745; font-size:0.8rem; font-weight:600;">+8%</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ROW 3 -->
+                <div class="dashboard-grid row-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Web Traffic Report by Locations with Devices</h3>
+                        </div>
+                        <div class="d-flex" style="gap:40px; flex-wrap:wrap;">
+                            <!-- Placeholder Map -->
+                            <div style="flex:1; min-width:300px; display:flex; align-items:center; justify-content:center; opacity:0.8;">
+                                <svg viewBox="0 0 800 400" style="width:100%; max-width:600px; fill:#e0e0e0;">
+                                    <path d="M100,150 Q150,100 200,120 T300,140 T400,110 T500,160 T600,130 T700,180 L700,300 L100,300 Z" fill="#eee"/>
+                                    <!-- Dots -->
+                                    <circle cx="250" cy="180" r="6" fill="#28a745"/>
+                                    <circle cx="400" cy="150" r="6" fill="#ffc107"/>
+                                    <circle cx="550" cy="220" r="6" fill="#007bff"/>
+                                </svg>
+                            </div>
+                            
+                            <!-- Table -->
+                            <div style="flex:1; min-width:300px;">
+                                <table class="map-table">
+                                    <thead>
+                                        <tr>
+                                            <th>DEVICE</th>
+                                            <th>INDIA</th>
+                                            <th>USA</th>
+                                            <th>OTHERS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><div class="d-flex align-center gap-2"><i data-lucide="smartphone" style="color:#20c997; width:18px;"></i> Mobiles</div></td>
+                                            <td>100%</td>
+                                            <td>0%</td>
+                                            <td>0%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="d-flex align-center gap-2"><i data-lucide="monitor" style="color:#007bff; width:18px;"></i> Desktops</div></td>
+                                            <td>100%</td>
+                                            <td>0%</td>
+                                            <td>0%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        
+        // Mobile Sidebar
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        });
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        // CHART.JS INITIALIZATION
+        document.addEventListener('DOMContentLoaded', function() {
+            // Common Options
+            Chart.defaults.font.family = 'Inter, sans-serif';
+            Chart.defaults.color = '#888';
+            
+            // 1. PERFORMANCE CHART (Stepped Line)
+            const ctxPerf = document.getElementById('performanceChart').getContext('2d');
+            const perfGradient1 = ctxPerf.createLinearGradient(0, 0, 0, 300);
+            perfGradient1.addColorStop(0, 'rgba(40, 167, 69, 0.2)');
+            perfGradient1.addColorStop(1, 'rgba(40, 167, 69, 0)');
+            
+            const perfGradient2 = ctxPerf.createLinearGradient(0, 0, 0, 300);
+            perfGradient2.addColorStop(0, 'rgba(255, 193, 7, 0.1)');
+            perfGradient2.addColorStop(1, 'rgba(255, 193, 7, 0)');
+
+            new Chart(ctxPerf, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [
+                        {
+                            label: 'Series 1',
+                            data: [1000, 1500, 1400, 1800, 1800, 2500, 1800, 1800, 2500, 1800, 1800, 2400],
+                            borderColor: '#28a745',
+                            backgroundColor: perfGradient1,
+                            borderWidth: 2,
+                            stepped: true,
+                            fill: true,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Series 2',
+                            data: [700, 1200, 700, 700, 1500, 700, 1500, 700, 700, 1500, 700, 1000],
+                            borderColor: '#ffc107',
+                            backgroundColor: perfGradient2,
+                            borderWidth: 2,
+                            stepped: true,
+                            fill: true,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [4, 4], color: '#f0f0f0' }, ticks: { stepSize: 600 } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Mini Sparkline Generator
+            function createMiniChart(id, color, data) {
+                new Chart(document.getElementById(id), {
+                    type: 'bar',
+                    data: { labels: ['1','2','3','4','5','6'], datasets: [{ data: data, backgroundColor: color, borderRadius: 2 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false, min: 0 } } }
+                });
+            }
+            createMiniChart('miniChart1', '#17a2b8', [10, 20, 15, 30, 25, 40]);
+            createMiniChart('miniChart2', '#28a745', [20, 10, 30, 20, 40, 35]);
+            
+            // Mini Line Chart Generator
+            function createMiniLine(id, color, data) {
+                new Chart(document.getElementById(id), {
+                    type: 'line',
+                    data: { labels: ['1','2','3','4','5','6'], datasets: [{ data: data, borderColor: color, borderWidth: 2, tension: 0.4, pointRadius: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } } }
+                });
+            }
+            createMiniLine('miniChart3', '#e83e8c', [10, 25, 15, 30, 20, 40]);
+            createMiniLine('miniChart4', '#fd7e14', [30, 20, 40, 25, 35, 20]);
+
+            // 2. VISITORS HORIZONTAL BAR
+            new Chart(document.getElementById('visitorsHBar'), {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [
+                        { label: 'A', data: [60, 80, 50, 40, 30, 70, 50], backgroundColor: '#28a745', borderRadius: 4, barThickness: 8 },
+                        { label: 'B', data: [40, 20, 50, 60, 70, 30, 50], backgroundColor: '#c3e6cb', borderRadius: 4, barThickness: 8 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { stacked: true, display: false },
+                        y: { stacked: true, grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+
+            // 3. WEB ANALYTICS VERTICAL BAR
+            new Chart(document.getElementById('analyticsBar'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov'],
+                    datasets: [
+                        { label: 'Data 1', data: [200, 300, 400, 500, 600, 700, 800, 600, 500, 400, 300], backgroundColor: 'rgba(40, 167, 69, 0.8)', borderColor: '#28a745', borderWidth: 1, barThickness: 12 },
+                        { label: 'Data 2', data: [150, 250, 350, 450, 550, 650, 750, 550, 450, 350, 250], backgroundColor: 'rgba(40, 167, 69, 0.3)', borderColor: '#28a745', borderWidth: 1, barThickness: 12 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [4, 4], color: '#f0f0f0' }, border: { display: false } },
+                        x: { grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+
+            // 4. REPORT MONTHLY AVG AREA
+            const ctxArea = document.getElementById('reportArea').getContext('2d');
+            const areaGradient1 = ctxArea.createLinearGradient(0, 0, 0, 120);
+            areaGradient1.addColorStop(0, 'rgba(40, 167, 69, 0.3)');
+            areaGradient1.addColorStop(1, 'rgba(40, 167, 69, 0)');
+            
+            const areaGradient2 = ctxArea.createLinearGradient(0, 0, 0, 120);
+            areaGradient2.addColorStop(0, 'rgba(0, 123, 255, 0.3)');
+            areaGradient2.addColorStop(1, 'rgba(0, 123, 255, 0)');
+
+            new Chart(ctxArea, {
+                type: 'line',
+                data: {
+                    labels: ['1', '2', '3', '4', '5', '6', '7'],
+                    datasets: [
+                        { data: [30, 40, 35, 50, 45, 55, 40], borderColor: '#28a745', backgroundColor: areaGradient1, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 },
+                        { data: [20, 30, 25, 40, 35, 45, 30], borderColor: '#007bff', backgroundColor: areaGradient2, fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false, min: 0 },
+                        x: { display: false }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

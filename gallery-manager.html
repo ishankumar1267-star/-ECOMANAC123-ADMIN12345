@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Manager | Eco Manav CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .upload-zone { border: 2px dashed #ccc; padding: 40px; text-align: center; border-radius: var(--radius-lg); background: white; margin-bottom: 24px; cursor: pointer; }
+        .upload-zone:hover { border-color: var(--admin-green); background: var(--admin-green-light); }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+        .gallery-item { position: relative; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 1; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; flex-direction:column; justify-content:center; align-items:center; opacity:0; transition:opacity 0.2s; gap:8px; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-logo"><i data-lucide="leaf"></i> ECO MANAV</div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="blog-manager.html" class="nav-item"><i data-lucide="file-text"></i> Blog Posts</a>
+                <a href="programs-manager.html" class="nav-item"><i data-lucide="graduation-cap"></i> Programs</a>
+                <a href="gallery-manager.html" class="nav-item active"><i data-lucide="image"></i> Gallery</a>
+                <a href="donations-manager.html" class="nav-item"><i data-lucide="indian-rupee"></i> Donations</a>
+                <a href="users-manager.html" class="nav-item"><i data-lucide="users"></i> Users & Vol.</a>
+                <a href="messages.html" class="nav-item"><i data-lucide="mail"></i> Messages</a>
+                <a href="pages-manager.html" class="nav-item"><i data-lucide="file"></i> Pages</a>
+                <a href="appearance.html" class="nav-item"><i data-lucide="palette"></i> Appearance</a>
+                <a href="settings.html" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+                <a href="seo-manager.html" class="nav-item"><i data-lucide="search"></i> SEO Manager</a>
+                <a href="notifications.html" class="nav-item"><i data-lucide="bell"></i> Notifications</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h2 style="font-size: 1.25rem; margin: 0;">Gallery Manager</h2>
+            </header>
+            <div class="admin-content">
+                <div class="upload-zone">
+                    <i data-lucide="upload-cloud" style="width:48px; height:48px; color:#aaa; margin-bottom:16px;"></i>
+                    <h3>Drag & Drop files here</h3>
+                    <p style="color:#666;">or click to browse (JPG, PNG, WebP, MP4)</p>
+                </div>
+                
+                <h3 class="mb-3">All Media</h3>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=400">
+                        <div class="gallery-overlay">
+                            <button class="btn btn-secondary" style="padding:4px 8px;"><i data-lucide="edit-2"></i> Edit</button>
+                            <button class="btn btn-danger" style="padding:4px 8px;"><i data-lucide="trash-2"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

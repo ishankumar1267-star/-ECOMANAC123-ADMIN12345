@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programs Manager | Eco Manav CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .program-card { background: white; border: 1px solid #eee; border-radius: var(--radius-md); overflow: hidden; }
+        .program-card img { width: 100%; height: 160px; object-fit: cover; }
+        .program-card-content { padding: 16px; }
+        .program-actions { border-top: 1px solid #eee; padding: 12px 16px; display: flex; justify-content: space-between; }
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-logo"><i data-lucide="leaf"></i> ECO MANAV</div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="blog-manager.html" class="nav-item"><i data-lucide="file-text"></i> Blog Posts</a>
+                <a href="programs-manager.html" class="nav-item active"><i data-lucide="graduation-cap"></i> Programs</a>
+                <a href="gallery-manager.html" class="nav-item"><i data-lucide="image"></i> Gallery</a>
+                <a href="donations-manager.html" class="nav-item"><i data-lucide="indian-rupee"></i> Donations</a>
+                <a href="users-manager.html" class="nav-item"><i data-lucide="users"></i> Users & Vol.</a>
+                <a href="messages.html" class="nav-item"><i data-lucide="mail"></i> Messages</a>
+                <a href="pages-manager.html" class="nav-item"><i data-lucide="file"></i> Pages</a>
+                <a href="appearance.html" class="nav-item"><i data-lucide="palette"></i> Appearance</a>
+                <a href="settings.html" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+                <a href="seo-manager.html" class="nav-item"><i data-lucide="search"></i> SEO Manager</a>
+                <a href="notifications.html" class="nav-item"><i data-lucide="bell"></i> Notifications</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h2 style="font-size: 1.25rem; margin: 0;">Programs Manager</h2>
+                <button class="btn btn-primary"><i data-lucide="plus"></i> Add Program</button>
+            </header>
+            <div class="admin-content">
+                <div class="d-flex gap-3 mb-4">
+                    <input type="text" class="form-control" placeholder="Search programs..." style="max-width: 300px;">
+                    <select class="form-control" style="width: auto;"><option>All Categories</option></select>
+                </div>
+                
+                <div class="grid-cards">
+                    <div class="program-card">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=400">
+                        <div class="program-card-content">
+                            <span class="status-badge status-active mb-2">Active</span>
+                            <h3 style="font-size:1.1rem; margin-bottom:8px;">Project Green Canopy</h3>
+                            <p style="color:#666; font-size:0.85rem;">Environment • Enrolled: 120</p>
+                        </div>
+                        <div class="program-actions">
+                            <button class="btn-ghost"><i data-lucide="edit-2"></i> Edit</button>
+                            <button class="btn-ghost" style="color:var(--admin-danger);"><i data-lucide="trash-2"></i> Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

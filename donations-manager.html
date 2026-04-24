@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donations Manager | Eco Manav CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="sidebar">
+            <div class="sidebar-logo"><i data-lucide="leaf"></i> ECO MANAV</div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="blog-manager.html" class="nav-item"><i data-lucide="file-text"></i> Blog Posts</a>
+                <a href="programs-manager.html" class="nav-item"><i data-lucide="graduation-cap"></i> Programs</a>
+                <a href="gallery-manager.html" class="nav-item"><i data-lucide="image"></i> Gallery</a>
+                <a href="donations-manager.html" class="nav-item active"><i data-lucide="indian-rupee"></i> Donations</a>
+                <a href="users-manager.html" class="nav-item"><i data-lucide="users"></i> Users & Vol.</a>
+                <a href="messages.html" class="nav-item"><i data-lucide="mail"></i> Messages</a>
+                <a href="pages-manager.html" class="nav-item"><i data-lucide="file"></i> Pages</a>
+                <a href="appearance.html" class="nav-item"><i data-lucide="palette"></i> Appearance</a>
+                <a href="settings.html" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+                <a href="seo-manager.html" class="nav-item"><i data-lucide="search"></i> SEO Manager</a>
+                <a href="notifications.html" class="nav-item"><i data-lucide="bell"></i> Notifications</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h2 style="font-size: 1.25rem; margin: 0;">Donations Manager</h2>
+                <button class="btn btn-secondary"><i data-lucide="download"></i> Export CSV</button>
+            </header>
+            <div class="admin-content">
+                <div class="card mb-4" style="background:var(--admin-green); color:white;">
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Total Raised This Month</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; margin-bottom: 12px;">₹1,45,000</div>
+                    <div style="background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: white; height: 100%; width: 29%;"></div>
+                    </div>
+                    <div style="font-size: 0.8rem; margin-top: 8px;">₹1,45,000 of ₹5,00,000 Goal</div>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Donor Name</th>
+                                    <th>Email</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Amit Patel</td>
+                                    <td>amit@example.com</td>
+                                    <td style="font-weight:bold; color:var(--admin-green);">₹1,000</td>
+                                    <td>Oct 20, 2025</td>
+                                    <td><span class="status-badge status-active">Success</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
