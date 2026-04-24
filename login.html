@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Eco Manav CMS</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; font-family: var(--font-body); }
+        
+        .login-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        /* Left Panel - Waves */
+        .login-left {
+            flex: 6;
+            position: relative;
+            background: linear-gradient(135deg, #1565C0, #1E88E5, #42A5F5);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .wave-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: 0;
+            left: 0;
+            opacity: 0.8;
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background-repeat: repeat-x;
+            background-position: 0 bottom;
+            transform-origin: center bottom;
+        }
+        
+        .wave1 {
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="%23FFFFFF"></path><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05c92.83,70.36,231.53,32.43,310.4-9.59,48-25.68,91.82-52.46,145.4-52.46h0c53.58,0,97.38,26.78,145.4,52.46,78.87,42.02,217.57,79.95,310.4,9.59,20.05-15.19,34.69-35.13,47.69-56.24V0Z" opacity=".5" fill="%23FFFFFF"></path><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%23FFFFFF"></path></svg>');
+            background-size: 50% 100%;
+            animation: move-wave 15s linear infinite;
+        }
+        
+        .wave2 {
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%2364B5F6" opacity=".5"></path></svg>');
+            background-size: 50% 100%;
+            animation: move-wave 20s linear infinite;
+            bottom: -20px;
+        }
+        
+        @keyframes move-wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* Floating Particles */
+        .particles { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+        .particle { position: absolute; width: 24px; height: 24px; opacity: 0.6; animation: float 10s infinite linear; color: rgba(255,255,255,0.4); }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100px) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+        
+        .left-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            padding: 40px;
+        }
+        .left-content h1 { font-size: 3rem; color: white; margin-bottom: 10px; }
+        .left-content p { font-size: 1.2rem; opacity: 0.9; }
+
+        /* Right Panel - Login */
+        .login-right {
+            flex: 4;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 20;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+        }
+        
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--admin-green);
+        }
+        
+        .login-box h2 {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--admin-text);
+            margin-bottom: 8px;
+        }
+        
+        .divider {
+            height: 2px;
+            background: #eee;
+            width: 60px;
+            margin: 0 auto 32px auto;
+        }
+        
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--admin-green);
+            text-decoration: none;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+        .forgot-link:hover { text-decoration: underline; }
+        
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            top: 35px;
+            color: #999;
+            cursor: pointer;
+            width: 16px; height: 16px;
+        }
+        
+        .login-btn-submit {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+        
+        .signup-divider {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--admin-text-muted);
+            position: relative;
+            margin-bottom: 24px;
+        }
+        .signup-divider span { background: white; padding: 0 10px; position: relative; z-index: 1; }
+        .signup-divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #ddd; z-index: 0; }
+        
+        .signup-divider a { color: var(--admin-green); text-decoration: none; font-weight: 600; }
+        
+        .social-login { text-align: center; }
+        .social-label { font-size: 0.85rem; color: var(--admin-text-muted); margin-bottom: 12px; }
+        .social-btns { display: flex; justify-content: center; gap: 16px; }
+        .social-btn {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--admin-green);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--admin-green);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .social-btn:hover { background: var(--admin-green-light); transform: translateY(-2px); }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal {
+            background: white; border-radius: var(--radius-lg); padding: 32px;
+            width: 100%; max-width: 400px; transform: translateY(-20px); transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .modal h3 { margin-bottom: 8px; }
+        .modal p { color: var(--admin-text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .close-modal { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: #999; }
+        
+        /* Slide Animation to Dashboard */
+        body.transitioning .login-layout {
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        
+        @media (max-width: 900px) {
+            .login-left { display: none; }
+            .login-right { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-layout">
+        <!-- Left Panel -->
+        <div class="login-left">
+            <div class="wave-container">
+                <div class="wave wave1"></div>
+                <div class="wave wave2"></div>
+            </div>
+            <div class="particles" id="particles">
+                <i data-lucide="leaf" class="particle" style="left: 10%; animation-delay: 0s;"></i>
+                <i data-lucide="leaf" class="particle" style="left: 30%; animation-delay: 3s;"></i>
+                <i data-lucide="leaf" class="particle" style="left: 50%; animation-delay: 6s;"></i>
+                <i data-lucide="leaf" class="particle" style="left: 70%; animation-delay: 2s;"></i>
+                <i data-lucide="leaf" class="particle" style="left: 90%; animation-delay: 5s;"></i>
+            </div>
+            <div class="left-content">
+                <i data-lucide="leaf" style="width: 64px; height: 64px; margin-bottom: 16px;"></i>
+                <h1>Eco Manav CMS</h1>
+                <p>Manage content, programs, and donations seamlessly.</p>
+            </div>
+        </div>
+        
+        <!-- Right Panel -->
+        <div class="login-right">
+            <div class="login-box">
+                <div class="login-logo">
+                    <i data-lucide="leaf"></i> ECO MANAV
+                </div>
+                <h2>Admin Login</h2>
+                <div class="divider"></div>
+                
+                <form id="loginForm">
+                    <div class="form-group has-icon">
+                        <label class="form-label">Email Address</label>
+                        <i data-lucide="mail" class="input-icon"></i>
+                        <input type="email" class="form-control" id="email" placeholder="admin@ecomanav.org">
+                        <div class="error-msg" id="emailError">Email is required</div>
+                    </div>
+                    
+                    <div class="form-group has-icon">
+                        <label class="form-label">Password</label>
+                        <i data-lucide="lock" class="input-icon"></i>
+                        <input type="password" class="form-control" id="password" placeholder="••••••••">
+                        <i data-lucide="eye-off" class="password-toggle" id="togglePassword"></i>
+                        <div class="error-msg" id="passwordError">Password is required</div>
+                    </div>
+                    
+                    <a href="#" class="forgot-link" onclick="openModal()">Forgot Password?</a>
+                    
+                    <button type="submit" class="btn btn-primary login-btn-submit">Login</button>
+                    
+                    <div class="signup-divider">
+                        <span>Don't have account? <a href="#">Sign UP</a></span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <div class="social-label">Login with Social</div>
+                        <div class="social-btns">
+                            <button type="button" class="social-btn"><i data-lucide="twitter"></i></button>
+                            <button type="button" class="social-btn" style="font-weight:bold; font-family:serif;">G</button>
+                            <button type="button" class="social-btn"><i data-lucide="facebook"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal" style="position: relative;">
+            <button class="close-modal" onclick="closeModal()"><i data-lucide="x"></i></button>
+            <h3>Reset Password</h3>
+            <p>Enter your email and we'll send you a reset link.</p>
+            
+            <form id="forgotForm">
+                <div class="form-group">
+                    <input type="email" class="form-control" id="resetEmail" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Reset Link</button>
+                <div class="error-msg" id="resetSuccess" style="color: var(--admin-success); margin-top: 12px; font-weight: 500;"><i data-lucide="check-circle" style="vertical-align:middle; width:16px; margin-right:4px;"></i> Reset link sent to your email ✓</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        lucide.createIcons();
+        
+        // Toggle Password
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            if(type === 'password') {
+                this.innerHTML = '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line>';
+            } else {
+                this.innerHTML = '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle>';
+            }
+        });
+
+        // Form Validation & Submit
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            let isValid = true;
+            
+            // Reset errors
+            email.classList.remove('error'); document.getElementById('emailError').style.display = 'none';
+            password.classList.remove('error'); document.getElementById('passwordError').style.display = 'none';
+            
+            if(!email.value) {
+                email.classList.add('error');
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+            if(!password.value) {
+                password.classList.add('error');
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            }
+            
+            if(isValid) {
+                if(email.value === 'admin@ecomanav.org' && password.value === '@admin123') {
+                    // Success
+                    document.body.classList.add('transitioning');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 600);
+                } else {
+                    // Wrong credentials
+                    showToast('Invalid email or password', 'error');
+                }
+            }
+        });
+
+        // Forgot Modal
+        function openModal() { document.getElementById('forgotModal').classList.add('active'); }
+        function closeModal() { 
+            document.getElementById('forgotModal').classList.remove('active'); 
+            document.getElementById('resetSuccess').style.display = 'none';
+            document.getElementById('forgotForm').reset();
+        }
+        
+        document.getElementById('forgotForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('resetSuccess').style.display = 'block';
+            setTimeout(() => { closeModal(); }, 2000);
+        });
+
+        // Toast
+        function showToast(message, type = 'error') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icon = type === 'error' ? '<i data-lucide="alert-circle" style="color:var(--admin-danger)"></i>' : '<i data-lucide="check-circle" style="color:var(--admin-success)"></i>';
+            
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
